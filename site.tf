@@ -1,7 +1,15 @@
 variable "ip" {}
 
-variable "ui_port" {
+variable "rpc_port" {
+  default = 8400
+}
+
+variable "http_port" {
   default = 8500
+}
+
+variable "dns_port" {
+  default = 8600
 }
 
 provider "docker" {
@@ -17,9 +25,27 @@ resource "docker_container" "consul" {
   name  = "consul"
 
   ports {
-    internal = 8500
-    external = "${var.ui_port}"
+    internal = 8400
+    external = "${var.rpc_port}"
     protocol = "TCP"
+  }
+
+  ports {
+    internal = 8500
+    external = "${var.http_port}"
+    protocol = "TCP"
+  }
+
+  ports {
+    internal = 8600
+    external = "${var.dns_port}"
+    protocol = "TCP"
+  }
+
+  ports {
+    internal = 8600
+    external = "${var.dns_port}"
+    protocol = "UDP"
   }
 
   volumes {
